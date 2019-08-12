@@ -1,0 +1,349 @@
+﻿@model IEnumerable<SchoolApp.Web.Models.PupilViewModel>
+
+@{
+    ViewData["Title"] = "Ученики";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Редактирование данных об ученике</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-id" class="input-group-text">Id</span>
+                            </div>
+                            <input type="text" class="form-control" disabled id="Id" aria-describedby="input-id" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">ФИО</span>
+                            </div>
+                            <input required type="text" class="form-control" id="Surname" />
+                            <input required type="text" class="form-control" id="Name" />
+                            <input required type="text" class="form-control" id="SecondName" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-gender" class="input-group-text">Пол</span>
+                            </div>
+                            <select class="browser-default custom-select" id="Gender" aria-describedby="input-gender">
+                                <option value="Мужской">Мужской</option>
+                                <option value="Женский">Женский</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group date" id="BirthdayModal">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Дата рождения</span>
+                            </div>
+                            <input id="Birthday" name="input-birthday" type="text" class="form-control" aria-describedby="date-button ">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary fa fa-calendar" id="date-button"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="GradePropId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick=EditPupil() class="btn btn-primary">Сохранить изменения</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateNewModal" tabindex="-1" role="dialog" aria-labelledby="CreateNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreateNewModalLabel">Создание новой записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">ФИО</span>
+                            </div>
+                            <input required type="text" class="form-control" id="NewSurname" />
+                            <input required type="text" class="form-control" id="NewName" />
+                            <input required type="text" class="form-control" id="NewSecondName" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-gender" class="input-group-text">Пол</span>
+                            </div>
+                            <select required class="browser-default custom-select" id="NewGender" aria-describedby="input-gender">
+                                <option selected></option>
+                                <option value="Мужской">Мужской</option>
+                                <option value="Женский">Женский</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group date" data-provide="datepicker" data-date-format="dd.mm.yyyy">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Дата рождения</span>
+                            </div>
+                            <input required id="NewBirthday" type="text" class="form-control" aria-describedby="date-button ">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary fa fa-calendar" id="date-button"></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick=CreatePupil() class="btn btn-primary">Создать запись</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .row-hover:hover{
+        background-color: rgba(208, 203, 203, 0.40);
+    }
+</style>
+
+<div class="table" style="padding-bottom:2em; padding-top:1em;">
+    <div class="row justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em;">
+        <div class="col-12 col-md-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Фамилия</span>
+                </div>
+                <input required type="text" class="form-control" id="FilterSurname" />
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Возраст</span>
+                </div>
+                <input required type="text" class="form-control" id="FilterAge" />
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Класс</span>
+                </div>
+                <input required type="text" class="form-control" id="FilterGrade" />
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em;">
+        <div class="col-12 offset-md-11 col-md-1">
+            <button type="button" class="btn btn-outline-primary" onclick="Filter()">Фильтр</button>
+        </div>
+    </div>
+</div>
+<div class="row row-hover justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey; font-weight:bold">
+    <div class="col-12 col-sm-1">#</div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-6 col-md-3 col-lg-2 col-xl-2 ">Фамилия</div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-3 col-lg-2 col-xl-2 ">Имя</div>
+    <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2 col-xl-2">Отчество</div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 offset-md-2 col-md-3 offset-lg-0 col-lg-2 col-xl-1">Пол</div>
+    <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2 col-xl-2 ">Дата рождения</div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-4 offset-lg-9 col-lg-2 offset-xl-0">
+        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#CreateNewModal">Создать запись</button>
+    </div>
+    
+</div>
+    @foreach (var item in Model)
+    {
+<div class="row row-hover justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey">
+
+    <div class="col-12 col-sm-1" style="font-weight:bold" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @Html.DisplayFor(modelItem => item.Id)
+    </div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-6 col-md-3 col-lg-2 col-xl-2" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @Html.DisplayFor(modelItem => item.Surname)
+    </div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-3 col-lg-2 col-xl-2" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @Html.DisplayFor(modelItem => item.Name)
+    </div>
+    <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2 col-xl-2" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @Html.DisplayFor(modelItem => item.SecondName)
+    </div>
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 offset-md-2 col-md-3 offset-lg-0 col-lg-2 col-xl-1" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @Html.DisplayFor(modelItem => item.Gender)
+    </div>
+
+    <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2 col-xl-2" onclick="showModal('@item.Id', '@item.Surname', '@item.Name', '@item.SecondName', '@item.Gender', '@item.Birthday.ToShortDateString()', '@item.GradePropId')">
+        @item.Birthday.ToShortDateString()
+    </div>
+    @*<div class="col-12 col-sm-6 col-md-3 col-lg-2 offset-md-1 offset-lg-6 offset-xl-0 col-xl-auto" >
+            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal"
+                    data-itemid=@item.Id
+                    data-itemsurname="@item.Surname"
+                    data-itemname="@item.Name"
+                    data-itemsecondname="@item.SecondName"
+                    data-itemgender="@item.Gender"
+                    data-itembirthday="@item.Birthday.ToShortDateString()"
+                    data-itemgradepropid="@item.GradePropId">
+                Редактировать
+            </button>
+        </div>*@
+    <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-4 offset-lg-9 col-lg-2 offset-xl-0">
+        <button type="button" onclick=RemovePupil(@item.Id) class="btn btn-outline-danger">Удалить запись</button>
+    </div>
+</div>
+    }
+
+
+
+
+
+<script type="text/javascript">
+    function showModal(Id, Surname, Name, SecondName, Gender, Birthday, GradeId) {
+        $('#exampleModal').modal('show', function () {
+            var modal = $(this)
+            modal.find('.modal-body #Id').val(Id)
+            modal.find('.modal-body #Surname').val(Surname)
+            modal.find('.modal-body #Name').val(Name)
+            modal.find('.modal-body #SecondName').val(SecondName)
+            modal.find('.modal-body #Gender').val(Gender)
+            modal.find('.modal-body #Birthday').val(Birthday)
+            modal.find('.modal-body #GradePropId').val(GradeId)
+            date=itembirthday
+
+        })
+        
+    }
+
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var itemid = button.data('itemid')
+        var itemsurname = button.data('itemsurname')
+        var itemname = button.data('itemname')
+        var itemsecondname = button.data('itemsecondname')
+        var itemgender = button.data('itemgender')
+        var itembirthday = button.data('itembirthday')
+        var itemgradepropid = button.data('itemgradepropid')
+        // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        if (event.namespace === 'bs.modal') {
+            modal.find('.modal-body #Id').val(itemid)
+            modal.find('.modal-body #Surname').val(itemsurname)
+            modal.find('.modal-body #Name').val(itemname)
+            modal.find('.modal-body #SecondName').val(itemsecondname)
+            modal.find('.modal-body #Gender').val(itemgender)
+            modal.find('.modal-body #Birthday').val(itembirthday)
+            modal.find('.modal-body #GradePropId').val(itemgradepropid)
+            date=itembirthday
+        }
+
+    })
+
+
+
+    function EditPupil() {
+        var Id = document.getElementById("Id").value;
+        var Surname = document.getElementById("Surname").value;
+        var Name = document.getElementById("Name").value;
+        var SecondName = document.getElementById("SecondName").value;
+        var Gender = document.getElementById("Gender").value;
+        var string = document.getElementById("Birthday").value;
+        var Birthday = new Date(string.substr(6, 4) + '-' + string.substr(3, 2) + '-' + string.substr(0, 2));
+        var GradePropId = document.getElementById("GradePropId").value;
+        var pupil = { Id, Surname, Name, SecondName, Gender, Birthday, GradePropId}
+        $.ajax({
+            url: '/api/pupil/' + Id,
+            type: 'PUT',
+            data: JSON.stringify(pupil),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        });
+    }
+    function CreatePupil() {
+        var Surname = document.getElementById("NewSurname").value;
+        var Name = document.getElementById("NewName").value;
+        var SecondName = document.getElementById("NewSecondName").value;
+        var Gender = document.getElementById("NewGender").value;
+        //var Birthday = document.getElementById("NewBirthday").value;
+        var string = document.getElementById("NewBirthday").value;
+        var Birthday = new Date(string.substr(6, 4) + '-' + string.substr(3, 2) + '-' + string.substr(0, 2));
+        var Id
+        var subject = { Id, Surname, Name, SecondName, Gender, Birthday }
+        $.ajax({
+            url: '/api/pupil/',
+            type: 'POST',
+            data: JSON.stringify(subject),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        })
+    }
+
+    function RemovePupil(Id) {
+        $.ajax({
+            url: '/api/pupil/' + Id,
+            type: 'DELETE',
+            data: JSON.stringify(Id),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        });
+    }
+
+    function SetDate() {
+        var date=document.getElementById('Birthday').value
+        alert(date)
+
+    }
+    $('#BirthdayModal').datepicker({
+
+            format: 'dd.mm.yyyy',
+            assumeNearbyYear: true,
+            language: 'ru',
+            orientation: "bottom left"
+    }).on('show', function() {
+        var date=document.getElementById('Birthday').value
+        $('#BirthdayModal').datepicker('setDate',date)
+
+    })
+
+    function Filter() {
+        var Surname = document.getElementById("FilterSurname").value
+        var Age = document.getElementById("FilterAge").value
+        var GradeName = document.getElementById("FilterGrade").value
+        location.href = "/api/pupil/?Surname=" + Surname + "&Age=" + Age + "&GradeName=" + GradeName
+    }
+
+
+
+</script>

@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <StartupObject></StartupObject>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <NeutralLanguage>ru</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20190518095338_init.cs" />
+    <Compile Remove="Migrations\20190518095338_init.Designer.cs" />
+    <Compile Remove="Migrations\20190518095904_init.cs" />
+    <Compile Remove="Migrations\20190518095904_init.Designer.cs" />
+    <Compile Remove="Migrations\20190524183959_init.cs" />
+    <Compile Remove="Migrations\20190524183959_init.Designer.cs" />
+    <Compile Remove="Migrations\20190524184309_init.cs" />
+    <Compile Remove="Migrations\20190524184309_init.Designer.cs" />
+    <Compile Remove="Migrations\20190524190425_init.cs" />
+    <Compile Remove="Migrations\20190524190425_init.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Bootstrap\css\bootstrap.min.css" />
+    <None Include="wwwroot\Bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\Bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\Bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\Bootstrap\js\jquery-3.3.1.slim.min.js" />
+    <None Include="wwwroot\Bootstrap\js\popper.min.js" />
+    <None Include="wwwroot\Bootstrap\js\popper.min.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolApp.BLL\SchoolApp.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Grade\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Pupil\Success.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Pupil\View.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Teacher\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<SchoolApp.Web.Models.GradeViewModel>
+@{
+    ViewData["Title"] = "Расписание";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <form>
+        <div class=" row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span id="input-teacher" class="input-group-text">ФИО</span>
+                        </div>
+                        <select class="browser-default custom-select" id="teacher" aria-describedby="input-teacher" style="width:10em;">
+                            <option></option>
+                            @foreach (var item in ViewBag?.Teachers)
+                            {
+                                if ((ViewBag.Teacher!=null)&&(ViewBag.Teacher.Id == item.Id))
+                                {
+                                    <option selected value="@item.Id">@item.Name @item.SecondName[0]. @item.Surname</option>
+                                }
+                                else {
+                                <option value="@item.Id">@item.Name @item.SecondName[0]. @item.Surname</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-outline-primary" onclick="GetTimetable()">Выбрать</button>
+        </div>
+    </form>
+    <style>
+        .col-bordered {
+            border-top: 1px solid lightgrey;
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+        }
+    </style>
+@if (ViewBag.Teacher != null)
+{
+<h3 class="h3">@ViewBag.Teacher.Name @ViewBag.Teacher.SecondName @ViewBag.Teacher.Surname</h3>
+}
+@if (Model != null) { 
+    foreach(var item in Model)
+        {
+            <div class="table justify-content-center" style="padding-top:2em; padding-bottom:2em; ">
+                <div class="row justify-content-center" style="font-weight:bold; text-align:center">
+                    <div class="col-12 col-md-6 col-bordered">@item.Name</div>
+                </div>
+                <div class="row justify-content-center" style="font-weight:bold; text-align:center">
+                    <div class="col-12 col-md-6 col-bordered">Список учеников</div>
+                </div>
+                <div class="row justify-content-center" style="font-weight:bold; ">
+                    <div class="col-12 col-md-2 col-bordered">Фамилия</div>
+                    <div class="col-11 offset-1 offset-md-0 col-md-2 col-bordered">Имя</div>
+                    <div class="col-11 offset-1 offset-md-0 col-md-2 col-bordered">Отчество</div>
+                </div>
+                @foreach(var pupil in item.Pupils)
+                {
+                    <div class="row justify-content-center ">
+                        <div class="col-12 col-md-2 col-bordered">@pupil.Surname</div>
+                        <div class="col-11 offset-1 offset-md-0 col-md-2 col-bordered">@pupil.Name</div>
+                        <div class="col-11 offset-1 offset-md-0 col-md-2 col-bordered">@pupil.SecondName</div>
+                    </div> 
+                }
+            </div>
+        }
+}
+<script>
+    function GetTimetable() {
+        var Id = document.getElementById("teacher").value
+        location.href = "/api/timetable/" + Id
+    }
+</script>

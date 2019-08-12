@@ -1,0 +1,49 @@
+﻿
+@model SchoolApp.Web.Models.LoginModel
+@{
+    ViewData["Title"] = "Авторизация";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+    
+        <form method="post" action="/api/Account">
+            @Html.ValidationSummary()
+            @Html.AntiForgeryToken()
+            <div class="table justify-content-center">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span id="input-name" class="input-group-text">Логин</span>
+                                </div>
+                                <input type="text" required class="form-control" name="Name" aria-describedby="input-name" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Пароль</span>
+                                </div>
+                                <input required type="password" name="Password" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-auto offset-8 col-md-auto offset-md-3">
+                        <input type="hidden" name="ReturnUrl" value="@ViewBag.URL" />
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Войти" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+</form>
+  

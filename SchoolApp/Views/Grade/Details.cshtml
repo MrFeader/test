@@ -1,0 +1,247 @@
+﻿@model SchoolApp.Web.Models.GradeViewModel
+@{
+    ViewData["Title"] = @Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавление записи об учебном предмете</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-post" class="input-group-text">Предмет</span>
+                            </div>
+                            <select required class="browser-default custom-select" id="NewSubject" aria-describedby="input-post">
+                                <option></option>
+                                @foreach (var item in ViewBag?.Teachers)
+                                {
+                                    <option value="@item.Id">@item.SubjectName.Name (@item.Name @item.SecondName[0] . @item.Surname)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick="AddSubject()" class="btn btn-primary">Сохранить изменения</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateNewModal" tabindex="-1" role="dialog" aria-labelledby="CreateNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreateNewModalLabel">Добавление записи об ученике</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-newpost" class="input-group-text">Ученик</span>
+                            </div>
+                            <select required class="browser-default custom-select" id="NewPupil" aria-describedby="input-newpost">
+                                <option></option>
+                                @foreach (var item in ViewBag?.PupilFree)
+                                {
+                                    <option value=@item.Id>@item.Name @item.SecondName[0] . @item.Surname (@item.Birthday.ToShortDateString() , @item.Age)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick=AddPupil() class="btn btn-primary">Создать запись</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .row-hover:hover {
+        background-color: rgba(208, 203, 203, 0.40);
+    }
+</style>
+
+
+<h4>@Model.Name</h4>
+<h5>
+    Классный руководитель: @Model.ClassTeacher.Surname @Model.ClassTeacher.Name @Model.ClassTeacher.SecondName
+</h5>
+
+@* Subjects list *@
+<div class="table" style="padding-top:3em;">
+    <div class="row justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey; font-weight:bold">
+        <div col-12>Список предметов</div>
+    </div>
+    <div class="row justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey; font-weight:bold">
+        <div class="col-12 col-md-2">Предмет</div>
+        <div class="col-11 offset-1 offset-md-0 col-md-7 col-lg-6 ">
+            Преподаватель
+            <div class="row">
+                <div class="col-11 offset-1 offset-md-0 col-md-4">Фамилия</div>
+                <div class="col-11 offset-1 offset-md-0 col-md-4">Имя</div>
+                <div class="col-11 offset-1 offset-md-0 col-md-4">Отчество</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-2">
+            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModal">Создать запись</button>
+        </div>
+    </div>
+    @foreach (var item in ViewBag?.TG)
+    {
+        <div class="row row-hover justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey">
+            <div class="col-12 col-md-2 ">@item.teacher.SubjectName.Name</div>
+            <div class="col-11 offset-1 offset-md-0 col-md-7 col-lg-6 ">
+                <div class="row">
+                    <div class="col-11 offset-1 offset-md-0 col-md-4">@item.teacher.Surname</div>
+                    <div class="col-11 offset-1 offset-md-0 col-md-4">@item.teacher.Name</div>
+                    <div class="col-11 offset-1 offset-md-0 col-md-4">@item.teacher.SecondName</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <button type="button" onclick=RemoveSubject('@item.GradeId','@item.TeacherId') class="btn btn-outline-danger">Удалить запись</button>
+            </div>
+
+
+        </div>
+    }
+</div>
+
+@* Pupils list *@
+<div class="table" style="padding-top:3em;">
+    <div class="row justify-content-center no-gutters" style="padding-top:.5em; padding-bottom:.5em; border-top: 1px solid lightgrey; font-weight:bold">
+        Список учеников
+    </div>
+    <div class="row justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey; font-weight:bold">
+        <div class="col-12 col-sm-1">#</div>
+        <div class="offset-1 col-11 offset-sm-0 col-sm-6 col-md-3 col-lg-2">Фамилия</div>
+        <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-3 col-lg-2">Имя</div>
+        <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2">Отчество</div>
+        <div class="offset-1 col-11 offset-sm-0 col-sm-5 offset-md-2 col-md-3 offset-lg-0 col-lg-2">Дата рождения</div>
+        <div class="offset-1 col-11 offset-sm-7 col-sm-5 offset-md-3 col-md-4 col-lg-2 offset-xl-0">
+            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#CreateNewModal">Создать запись</button>
+        </div>
+
+    </div>
+
+    @foreach (var item in ViewBag?.PupilsInClass)
+    {
+        <div class="row row-hover justify-content-center no-gutters" style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey">
+
+            <div class="col-12 col-sm-1" style="font-weight:bold">
+                @item.Id
+            </div>
+            <div class="offset-1 col-11 offset-sm-0 col-sm-6 col-md-3 col-lg-2">
+                @item.Surname
+            </div>
+            <div class="offset-1 col-11 offset-sm-0 col-sm-5 col-md-3 col-lg-2">
+                @item.Name
+            </div>
+            <div class="offset-1 col-11 offset-sm-1 col-sm-6 offset-md-0 col-md-3 col-lg-2">
+                @item.SecondName
+            </div>
+            <div class="offset-1 col-11 offset-sm-0 col-sm-5 offset-md-2 col-md-3 offset-lg-0 col-lg-2">
+                @item.Birthday.ToShortDateString() (@item.Age лет)
+            </div>
+            <div class="offset-1 col-11 offset-sm-7 col-sm-5 offset-md-3 col-md-4 col-lg-2 offset-xl-0">
+                <button type="button" onclick=RemovePupil(@item.Id) class="btn btn-outline-danger">Удалить запись</button>
+            </div>
+        </div>
+    }
+</div>
+
+
+<script type="text/javascript">
+    function showModal(Id, Surname, Name, SecondName, Post, SubjectId) {
+        $('#exampleModal').modal('show', function () {
+
+            var modal = $(this)
+            modal.find('.modal-body #Id').val(Id)
+            modal.find('.modal-body #Surname').val(Surname)
+            modal.find('.modal-body #Name').val(Name)
+            modal.find('.modal-body #SecondName').val(SecondName)
+            modal.find('.modal-body #Post').val(Post)
+            modal.find('.modal-body #Subject').val(SubjectId)
+
+
+        })
+
+    }
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+    })
+
+
+
+    function AddSubject() {
+        var GradeId = @Model.Id;
+        var TeacherId = document.getElementById("NewSubject").value;
+        var tg = { GradeId, TeacherId }
+        $.ajax({
+            url: '/api/tg/',
+            type: 'POST',
+            data: JSON.stringify(tg),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        });
+    }
+    
+    function RemoveSubject(GradeId, TeacherId) {
+        var TG = {GradeId, TeacherId}
+        $.ajax({
+            url: '/api/TG/',
+            type: 'DELETE',
+            data: JSON.stringify(TG),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        });
+        }
+
+    function AddPupil() {
+    var Id = document.getElementById("NewPupil").value
+        var GradeId =@Model.Id
+        $.ajax({
+            url: '/api/pupil/' + Id,
+            type: 'PATCH',
+            data: JSON.stringify(GradeId),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        })
+        }
+    function RemovePupil(Id) {
+        var GradeId=0
+        $.ajax({
+            url: '/api/pupil/' + Id,
+            type: 'PATCH',
+            data: JSON.stringify(GradeId),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        })
+    }
+</script>

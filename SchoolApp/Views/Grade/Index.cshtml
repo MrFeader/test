@@ -1,0 +1,222 @@
+﻿@model IEnumerable<SchoolApp.Web.Models.GradeViewModel>
+
+@{
+    ViewData["Title"] = "Классы";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Редактирование данных о преподавателе</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-id" class="input-group-text">Id</span>
+                            </div>
+                            <input type="text" class="form-control" disabled id="Id" aria-describedby="input-id" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Название</span>
+                            </div>
+                            <input required type="text" class="form-control" id="Name" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-post" class="input-group-text">Классный руководитель</span>
+                            </div>
+                            <select class="browser-default custom-select" id="ClassTeacher" aria-describedby="input-post">
+                                @foreach (var item in ViewBag?.Teachers)
+                                {
+                                    <option value=@item.Id>@item.Surname @item.Name @item.SecondName (@item.Post) </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick="EditClass()" class="btn btn-primary">Сохранить изменения</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateNewModal" tabindex="-1" role="dialog" aria-labelledby="CreateNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreateNewModalLabel">Создание новой записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Название</span>
+                            </div>
+                            <input required type="text" class="form-control" id="NewName" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span id="input-newclassteacher" class="input-group-text">Классный руководитель</span>
+                            </div>
+                            <select class="browser-default custom-select" id="NewClassTeacher" aria-describedby="input-newclassteacher">
+                                <option></option>
+                                @foreach(var item in ViewBag?.Teachers)
+                                {
+                                    <option value="@item.Id">@item.Name @item.SecondName[0]. @item.Surname (@item.Post)</option>
+                                }
+                                
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick=CreateClass() class="btn btn-primary">Создать запись</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row justify-content-center " style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey; font-weight:bold">
+    <div class="col-1">#</div>
+    <div class="col-11 col-md-3 col-lg-1 col-xl-1 ">Название</div>
+    <div class="col-11 offset-1 offset-md-0 col-md-6 pl-lg-5 col-lg-6 col-xl-6 ">Классный руководитель
+    <div class="row">
+        <div class="col-11 offset-1 offset-md-0 col-md-4">Фамилия</div>
+        <div class="col-11 offset-1 offset-md-0 col-md-4">Имя</div>
+        <div class="col-11 offset-1 offset-md-0 col-md-4">Отчество</div>
+    </div>
+    </div>
+    <div class="offset-1 col-11 offset-md-8 col-md-4 offset-lg-0 col-lg-4 offset-xl-0">
+        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#CreateNewModal">Создать запись</button>
+    </div>
+
+
+</div>
+@foreach (var item in Model)
+{
+<div class="row row-hover justify-content-center " style="padding-top:.25em; padding-bottom:.25em; border-top: 1px solid lightgrey">
+        <div class="col-1" style="font-weight:bold" onclick="showModal('@item.Id', '@item.Name', '@item?.ClassTeacherId')">
+            @Html.DisplayFor(modelItem => item.Id)
+        </div>
+        <div class="col-11 col-md-3 col-lg-1 col-xl-1 " onclick="showModal('@item.Id', '@item.Name', '@item?.ClassTeacherId')">
+            @Html.DisplayFor(modelItem => item.Name)
+        </div>
+        <div class="col-11 offset-1 offset-md-0 col-md-6 pl-lg-5 col-lg-6 col-xl-6 " onclick="showModal('@item.Id', '@item.Name', '@item?.ClassTeacherId')">
+            <div class="row">
+                <div class="col-11 offset-1 offset-md-0 col-md-4">
+                    @Html.DisplayFor(modelItem => item.ClassTeacher.Surname)
+                </div>
+                <div class="col-11 offset-1 offset-md-0 col-md-4">
+                    @Html.DisplayFor(modelItem => item.ClassTeacher.Name)
+                </div>
+                <div class="col-11 offset-1 offset-md-0 col-md-4">
+                    @Html.DisplayFor(modelItem => item.ClassTeacher.SecondName)
+                </div>
+            </div>
+        </div>
+    <div class="offset-1 col-11 offset-md-0 offset-md-6 col-md-6 offset-lg-0 col-lg-4 offset-xl-0">
+        <div class="row justify-content-start justify-content-md-center">
+            <div class="col-11 offset-1 offset-sm-0 col-sm-3  col-md-4" >
+                <button type="button" class="btn btn-outline-primary" onclick="window.location='/api/grade/@item.Id'">Подробнее</button>
+            </div>
+            <div class="col-11 offset-1 offset-sm-0 col-sm-6 col-md-8 pl-lg-4 pl-xl-1">
+                <button type="button" class="btn btn-outline-danger"  onclick=RemoveClass(@item.Id)>Удалить запись</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+}
+
+
+
+
+
+<script type="text/javascript">
+    function showModal(Id, Name, ClassTeacherId) {   
+        $('#exampleModal').modal('show', function () {
+            var modal = $(this);
+            modal.find('.modal-body #Id').val(Id);
+            modal.find('.modal-body #Name').val(Name);
+            modal.find('.modal-body #ClassTeacher').val(ClassTeacherId); 
+        })
+
+    }
+    $('#exampleModal').on('show.bs.modal', function (event) {
+       
+        var item = $(event.relatedTarget)        
+    })
+
+    function CreateClass() {
+        var Name = document.getElementById("NewName").value;
+        var ClassTeacherId = document.getElementById("NewClassTeacher").value;
+        var Id
+        var object = {Id, Name, ClassTeacherId}
+        $.ajax({
+            url: '/api/grade/',
+            type: 'POST',
+            data: JSON.stringify(object),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        })
+    }
+    function EditClass() {
+        var Name = document.getElementById("Name").value;
+        var ClassTeacherId = document.getElementById("ClassTeacher").value;
+        var Id=document.getElementById("Id").value;
+        var object = {Id, Name, ClassTeacherId}
+        $.ajax({
+            url: '/api/grade/' + Id,
+            type: 'PUT',
+            data: JSON.stringify(object),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        })
+    }
+    function RemoveClass(Id) {
+        $.ajax({
+            url: '/api/grade/' + Id,
+            type: 'DELETE',
+            data: JSON.stringify(Id),
+            contentType: "application/json; charset=utf-8",
+            error: function () { alert("Что-то пошло не так") },
+            success: function () { location.reload(true) }
+        });
+    }
+</script>

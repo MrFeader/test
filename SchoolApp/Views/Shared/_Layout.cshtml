@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="~/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    @*<link href="~/Bootstrap/css/bootstrap-grid.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+    <script src="~/Bootstrap/js/jquery-3.4.1.min.js"></script>
+    <script src="~/Bootstrap/js/popper.min.js"></script>
+    <script src="~/Bootstrap/js/bootstrap.min.js"></script>
+
+        <link href="~/Bootstrap/css/bootstrap-datepicker3.standalone.css" rel="stylesheet" />
+
+    
+    <script src="~/Bootstrap/js/bootstrap-datepicker.js"></script>
+    <script src="~/Bootstrap/js/bootstrap-datepicker.ru.min.js"></script>
+
+    <script>
+        $(function () {
+
+            // Dropdown toggle
+            $('.dropdown-toggle').click(function () {
+                $(this).next('.dropdown').toggle();
+            });
+
+            $(document).click(function (e) {
+                var target = e.target;
+                if (!$(target).is('.dropdown-toggle') && !$(target).parents().is('.dropdown-toggle')) {
+                    $('.dropdown').hide();
+                }
+            });
+
+        });
+    </script>
+    <title>@ViewBag.Title</title>
+    <style>
+        nav a {
+            text-decoration: none;
+            color: black;
+        }
+
+        nav {
+            position: relative;
+            padding: 0.4em;
+        }
+
+        .dropdown-toggle {
+            padding: .5em 1em;
+            background: lightblue ; /* Цвет фона */
+            color: black;
+            border-radius: .2em .2em 0 0;
+        }
+
+        ul.dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            margin-top: 0em;
+            background: lightblue; /* Цвет фона */
+            color: black;
+            min-width: 12em;
+            padding: 0;
+            border-radius: 0 0 .2em .2em;
+        }
+
+        ul.dropdown li {
+                list-style-type: none;
+        }
+
+        ul.dropdown li a {
+                    text-decoration: none;
+                    padding: 0.5em 1em;
+                    display: block;
+        }
+
+
+        .header {
+            z-index:9999;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #39b54a;
+            width: 100%;
+            height: 2.3em;
+        }
+
+        .footer {
+            position: fixed; /* Фиксированное положение */
+            left: 0;
+            bottom: 0; /* Левый нижний угол */
+            padding: 10px; /* Поля вокруг текста */
+            background: #39b54a; /* Цвет фона */
+            color: #fff; /* Цвет текста */
+            width: 100%; /* Ширина слоя */
+        }
+
+        .container {
+            padding-top: 6em;
+            padding-bottom: 6em;
+        }
+        .row-hover:hover {
+        background-color: rgba(208, 203, 203, 0.40);
+        }
+        .table {
+            width: auto;
+            margin: auto;
+        }
+
+            .table td {
+                padding: 0.3em 1em;
+            }
+
+            .table th {
+                padding: 0.3em 1em;
+            }
+
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        <nav>
+            <a class="dropdown-toggle" href="#" title="Menu">Меню</a>
+            <ul class="dropdown">
+                @if (User.Identity.Name == "администратор" || User.Identity.Name == "admin")
+                {
+                    <li><a href="/api/Pupil">Ученики</a></li>
+                    <li><a href="/api/Subject">Предметы</a></li>
+                    <li><a href="/api/Teacher">Преподаватели</a></li>
+                    <li><a href="/api/Grade">Классы</a></li>
+
+                    }
+                    else if (User.Identity.Name == "учитель")
+                    {
+                    <li><a href="/api/Timetable">Расписание</a></li>
+                }  
+                <li><a href="/api/account/LogOut">Выйти</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <div class="footer">
+        Тестовое задание "Школа". Петровкий Дмитрий 
+    </div>
+
+</body>
+</html>

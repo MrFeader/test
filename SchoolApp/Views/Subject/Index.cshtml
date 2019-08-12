@@ -1,0 +1,169 @@
+﻿@model IEnumerable<SchoolApp.Web.Models.SubjectViewModel>
+
+@{
+    ViewData["Title"] = "Предметы";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Редактирование предмета</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="Id">Id:</label>
+                        <input type="text" class="form-control" disabled id="Id" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Наименование предмета:</label>
+                        <input type="text" class="form-control" id="Name" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick=EditSubject() class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateNewModal" tabindex="-1" role="dialog" aria-labelledby="CreateNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreateNewModalLabel">Создание новой записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Название</span>
+                            </div>
+                            <input required type="text" class="form-control" id="NewName" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" onclick=CreateNew() class="btn btn-primary">Создать запись</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .col-auto, .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+    .col-sm-auto, .col, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+    .col-md-auto, .col, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
+    .col-lg-auto, .col, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
+    .col-xl-auto, .col, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12
+    {
+        border-top: 1px solid lightgrey;
+        padding-top:0.25em;
+        padding-bottom:0.25em;
+    }
+</style>
+
+<div class="row justify-content-center" style="font-weight:bold">
+    <div class="col-1">#</div>
+    <div class="col-11 col-md-3 col-lg-2">Название</div>
+    <div class="offset-1 col-11 offset-md-8 col-md-4 offset-lg-0 col-lg-2">
+        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#CreateNewModal">Создать запись</button>
+    </div>
+</div>
+@foreach (var item in Model)
+{
+<div class="row row-hover justify-content-center " >
+    <div class="col-1" style="font-weight:bold" onclick="showModal('@item.Id', '@item.Name')">
+        @Html.DisplayFor(modelItem => item.Id)
+    </div>
+    <div class="col-11 col-md-3 col-lg-2" onclick="showModal('@item.Id', '@item.Name')">
+        @Html.DisplayFor(modelItem => item.Name)
+    </div>
+    <div class="col-11 offset-1 offset-sm-0 col-sm-6 col-md-2">
+        <button type="button" class="btn btn-outline-danger" onclick=RemoveSubject(@item.Id)>Удалить запись</button>
+    </div>
+</div>
+}
+
+        
+
+
+
+
+
+        <script type="text/javascript">
+            function Func() {
+                $("#exampleModal").modal("show");
+
+            }
+            function showModal(Id, Name, ClassTeacherId) {   
+                $('#exampleModal').modal('show', function () {
+                    var modal = $(this);
+                    modal.find('.modal-body #Id').val(Id);
+                    modal.find('.modal-body #Name').val(Name); 
+                })
+            }
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                //var itemid = button.data('itemid')
+                //var itemname = button.data('itemname')// Extract info from data-* attributes
+                //// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                //// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                //var modal = $(this)
+                //modal.find('.modal-body #Id').val(itemid)
+                //modal.find('.modal-body #Name').val(itemname)
+
+            })
+            function EditSubject() {
+                var Id = document.getElementById("Id").value;
+                var Name = document.getElementById("Name").value;
+                var subject = { Id, Name }
+                $.ajax({
+                    url: '/api/subject/' + Id,
+                    type: 'PUT',
+                    data: JSON.stringify(subject),
+                    contentType: "application/json; charset=utf-8",
+                    error: function () { alert("Что-то пошло не так") },
+                    success: function () { location.reload(true) }
+                });
+            }
+            function CreateNew() {
+                var Name = document.getElementById("NewName").value;
+                var Id
+                var subject = { Id, Name }
+                $.ajax({
+                    url: '/api/subject/',
+                    type: 'POST',
+                    data: JSON.stringify(subject),
+                    contentType: "application/json; charset=utf-8",
+                    error: function () { alert("Что-то пошло не так") },
+                    success: function () { location.reload(true) }
+                })
+            }
+            function RemoveSubject(Id) {
+                $.ajax({
+                    url: '/api/subject/' + Id,
+                    type: 'DELETE',
+                    data: JSON.stringify(Id),
+                    contentType: "application/json; charset=utf-8",
+                    error: function () { alert("Что-то пошло не так") },
+                    success: function () { location.reload(true) }
+                });
+            }
+        </script>
